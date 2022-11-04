@@ -5,6 +5,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Main from "./pages/Main";
+import AppContext from "./context/AppContext";
+import { useState } from "react";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,7 +18,17 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  const [selectedPost, setSelectedPost] = useState("");
+  return (
+    <AppContext.Provider
+      value={{
+        selectedPost,
+        setSelectedPost,
+      }}
+    >
+      <RouterProvider router={router} />
+    </AppContext.Provider>
+  );
 }
 
 export default App;

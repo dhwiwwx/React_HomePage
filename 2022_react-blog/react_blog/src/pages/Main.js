@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import { HiOutlineDocument } from "react-icons/hi";
 import { AiOutlineSearch } from "react-icons/ai";
 import Accordion from "../components/Accordion";
 import Content from "../components/Content";
+import AppContext from "../context/AppContext";
 
 const tempData = [
   {
@@ -42,6 +43,7 @@ const tempData = [
 
 function Main() {
   const [selected, setSelected] = useState(null);
+  const { selectedPost } = useContext(AppContext);
 
   const listArr = [
     {
@@ -53,8 +55,8 @@ function Main() {
             내요요요옹
           </Accordion>
           <Accordion title="VSCODE" isBold={true}>
-            {tempData.map((one) => (
-              <Content {...one} />
+            {tempData.map((one, index) => (
+              <Content {...one} key={index} />
             ))}
           </Accordion>
         </>
@@ -76,6 +78,7 @@ function Main() {
             onClick={() => {
               setSelected(selected === index ? null : index);
             }}
+            key={index}
           >
             {one.icon}
           </IconWrap>
@@ -88,6 +91,7 @@ function Main() {
           {listArr[selected].content}
         </LeftContent>
       )}
+      <RightContent>{selectedPost}</RightContent>
     </Wrap>
   );
 }
@@ -110,13 +114,13 @@ const IconWrap = styled.div`
 const Wrap = styled.div`
   display: flex;
   height: 100vh;
-  background-color: #1fb1b1;
 `;
 
 const LeftBar = styled.div`
   width: 50px;
   height: 100%;
   background-color: #333333;
+  min-width: 50px;
 `;
 
 const LeftContent = styled.div`
@@ -129,4 +133,8 @@ const LeftContent = styled.div`
     padding-bottom: 10px;
     color: #7a7a7a;
   }
+`;
+const RightContent = styled.div`
+  background-color: #1e1e1e;
+  width: 100%;
 `;
