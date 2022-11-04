@@ -6,44 +6,9 @@ import Accordion from "../components/Accordion";
 import Content from "../components/Content";
 import AppContext from "../context/AppContext";
 
-const tempData = [
-  {
-    type: "directory",
-    title: "일상",
-  },
-  {
-    type: "directory",
-    title: "Tech",
-    children: [
-      {
-        type: "post",
-        title: "Tech1",
-      },
-      {
-        type: "post",
-        title: "Tech2",
-      },
-      {
-        type: "directory",
-        title: "Tech3",
-        children: [
-          {
-            type: "post",
-            title: "Tech31",
-          },
-          {
-            type: "post",
-            title: "Tech32",
-          },
-        ],
-      },
-    ],
-  },
-];
-
 function Main() {
   const [selected, setSelected] = useState(null);
-  const { selectedPost } = useContext(AppContext);
+  const { selectedPost, postData, openPost } = useContext(AppContext);
 
   const listArr = [
     {
@@ -55,7 +20,7 @@ function Main() {
             내요요요옹
           </Accordion>
           <Accordion title="VSCODE" isBold={true}>
-            {tempData.map((one, index) => (
+            {postData.map((one, index) => (
               <Content {...one} key={index} />
             ))}
           </Accordion>
@@ -91,7 +56,10 @@ function Main() {
           {listArr[selected].content}
         </LeftContent>
       )}
-      <RightContent>{selectedPost}</RightContent>
+      <RightContent>
+        {JSON.stringify(openPost)}
+        {selectedPost}
+      </RightContent>
     </Wrap>
   );
 }
