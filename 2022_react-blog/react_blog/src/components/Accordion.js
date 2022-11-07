@@ -14,7 +14,11 @@ function Accordion({ title, children, isBold }) {
         {expended ? <VscChevronDown /> : <VscChevronRight />}
         <span>{isBold ? <strong>{title}</strong> : title}</span>
       </AccordionWrap>
-      {expended && <AccordionContentWrap>{children}</AccordionContentWrap>}
+      {
+        <AccordionContentWrap expended={expended}>
+          {children}
+        </AccordionContentWrap>
+      }
     </>
   );
 }
@@ -36,7 +40,11 @@ const AccordionWrap = styled.div`
   }
 `;
 const AccordionContentWrap = styled.div`
+  max-height: ${({ expended }) => (expended ? "500px" : "0")};
+  overflow: hidden;
+  transition: ${({ expended }) =>
+    expended ? "max-height 0.25s ease-in" : "max-height 0.15s ease-out"};
   user-select: none;
-  padding-bottom: 5px;
-  padding-left: 15px;
+  margin-bottom: 5px;
+  margin-left: 15px;
 `;
