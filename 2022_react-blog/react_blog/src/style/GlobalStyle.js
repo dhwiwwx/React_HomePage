@@ -1,3 +1,6 @@
+import { createGlobalStyle } from "styled-components";
+
+export const GlobalStyle = createGlobalStyle`
 * {
   margin: 0;
   padding: 0;
@@ -5,19 +8,19 @@
 }
 
 *:not(svg, path) {
-  color: white;
+  color: ${({ theme }) => theme.color.text};
 }
 *::-webkit-scrollbar {
   height: 4px;
 }
 *::-webkit-scrollbar-thumb {
   height: 10%;
-  background-color: #464646;
+  background-color: ${({ theme }) => theme.color.secondary};
 
   border-radius: 10px;
 }
 *::-webkit-scrollbar-track {
-  background-color: #1e1e1e;
+  background-color: ${({ theme }) => theme.color.primary};
 }
 
 body {
@@ -29,7 +32,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+`;

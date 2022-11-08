@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { VscChevronDown, VscChevronRight } from "react-icons/vsc";
 
-function Accordion({ title, children, isBold }) {
-  const [expended, setExpended] = useState(false);
+function Accordion({ title, children, isBold, initialExpended }) {
+  const [expended, setExpended] = useState(initialExpended || false);
   return (
     <>
       <AccordionWrap
@@ -28,7 +28,7 @@ export default Accordion;
 const AccordionWrap = styled.div`
   display: flex;
   align-items: center;
-  color: white;
+  color: ${({ theme }) => theme.color.text};
 
   font-size: 0.8rem;
   padding: 5px 0;
