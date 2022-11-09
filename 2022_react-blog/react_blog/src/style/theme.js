@@ -8,3 +8,14 @@ export const darkTheme = {
     text: "white",
   },
 };
+
+export const lightTheme = {
+  color: {
+    primary: "white",
+    secondary: "#F0F8FF	",
+    third: "#87CEFA",
+    selected: "#B0C4DE",
+    hover: "white",
+    text: "black",
+  },
+};
