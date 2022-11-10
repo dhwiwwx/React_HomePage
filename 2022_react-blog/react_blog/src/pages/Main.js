@@ -8,6 +8,8 @@ import Content from "../components/Content";
 import AppContext from "../context/AppContext";
 import { getPostOne } from "../common/common.function";
 import PostWrap from "../components/PostWrap";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function Main() {
   const [selected, setSelected] = useState(null);
@@ -86,7 +88,7 @@ function Main() {
         </LeftContent>
       )}
       <RightWrap selected={selected}>
-        <RightHeader>
+        <RightHeader visible={openPost.length !== 0 ? true : false}>
           {openPost.map((one, index) => {
             const data = getPostOne(postData, one);
 
@@ -118,7 +120,10 @@ function Main() {
             );
           })}
         </RightHeader>
-        <RightContent selected={selected}>
+        <RightContent
+          selected={selected}
+          visible={openPost.length !== 0 ? true : false}
+        >
           {(() => {
             const data = getPostOne(postData, selectedPost);
 
@@ -132,11 +137,16 @@ function Main() {
                       <strong>Jungwon</strong> | {data.data?.date}
                     </p>
                     <div>
-                      {data?.data?.tag.map((one, index) => (
+                      {data?.data?.tag?.map((one, index) => (
                         <span key={index}>{one}</span>
                       ))}
                     </div>
-                    <div>{data.data?.content}</div>
+                    <div>
+                      <ReactMarkdown
+                        children={data.data?.content}
+                        remarkPlugins={{ remarkGfm }}
+                      />
+                    </div>
                   </div>
                 </>
               )
@@ -236,8 +246,9 @@ const RightWrap = styled.div`
 const RightHeader = styled.div`
   width: 100%;
   height: 50px;
-  display: flex;
+
   overflow-x: scroll;
+  display: ${({ visible }) => (visible ? "flex" : "none")};
   background-color: ${({ theme }) => theme.color.secondary};
 
   ::-webkit-scrollbar-thumb {
@@ -275,7 +286,7 @@ const RightHeader = styled.div`
 const RightContent = styled.div`
   background-color: ${({ theme }) => theme.color.primary};
   width: 100%;
-  height: calc(100% - 50px);
+  height: ${({ visible }) => (visible ? "calc(100% - 50px)" : "100%")};
   display: flex;
   flex-direction: column;
   align-items: center;
