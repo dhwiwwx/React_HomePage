@@ -15,4 +15,8 @@ export default React.createContext({
   //테마 변경
   theme: "",
   setTheme: () => {},
+
+  // 현재 선택된 태그
+  selectedTag: null,
+  setSelectedTag: () => {},
 });

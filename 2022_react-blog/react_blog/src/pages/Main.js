@@ -10,7 +10,9 @@ import { getPostOne } from "../common/common.function";
 import PostWrap from "../components/PostWrap";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import Search from "./Search";
 function Main() {
   const [selected, setSelected] = useState(null);
   const {
@@ -21,6 +23,7 @@ function Main() {
     selectedPost,
     postData,
     openPost,
+    selectedTag,
   } = useContext(AppContext);
 
   const listArr = [
@@ -53,10 +56,10 @@ function Main() {
     {
       icon: <AiOutlineSearch size={24} />,
       path: "SEARCH",
-      content: <p>111</p>,
+      content: <Search />,
     },
   ];
-
+  const data = getPostOne(postData, selectedPost);
   return (
     <Wrap>
       <LeftBar>
@@ -88,47 +91,58 @@ function Main() {
         </LeftContent>
       )}
       <RightWrap selected={selected}>
-        <RightHeader visible={openPost.length !== 0 ? true : false}>
-          {openPost.map((one, index) => {
-            const data = getPostOne(postData, one);
+        {selectedTag ? (
+          <RightTagContent>
+            <h2>
+              {selectedTag.tagTitle} 관련 글 몰록
+              <span>({selectedTag.path.length}개)</span>
+            </h2>
+            <div>
+              {selectedTag.path.map((path) => {
+                const tagData = getPostOne(postData, path);
+                return <div>{tagData.title}</div>;
+              })}
+            </div>
+          </RightTagContent>
+        ) : (
+          <>
+            <RightHeader visible={openPost.length !== 0 ? true : false}>
+              {openPost.map((one, index) => {
+                const data = getPostOne(postData, one);
 
-            return (
-              <div
-                className={selectedPost === one ? "selected" : ""}
-                onClick={() => {
-                  setSelectedPost(data.path);
-                }}
-                key={index}
-              >
-                📝 {data.title}
-                <span
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const openPostFilter = openPost.filter(
-                      (one) => one !== data.path
-                    );
-                    setOpenPost(openPostFilter);
+                return (
+                  <div
+                    className={selectedPost === one ? "selected" : ""}
+                    onClick={() => {
+                      setSelectedPost(data.path);
+                    }}
+                    key={index}
+                  >
+                    📝 {data.title}
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const openPostFilter = openPost.filter(
+                          (one) => one !== data.path
+                        );
+                        setOpenPost(openPostFilter);
 
-                    setSelectedPost(
-                      openPostFilter.length !== 0 ? openPostFilter[0] : null
-                    );
-                  }}
-                >
-                  &#215;
-                </span>
-              </div>
-            );
-          })}
-        </RightHeader>
-        <RightContent
-          selected={selected}
-          visible={openPost.length !== 0 ? true : false}
-        >
-          {(() => {
-            const data = getPostOne(postData, selectedPost);
-
-            return (
-              data && (
+                        setSelectedPost(
+                          openPostFilter.length !== 0 ? openPostFilter[0] : null
+                        );
+                      }}
+                    >
+                      &#215;
+                    </span>
+                  </div>
+                );
+              })}
+            </RightHeader>
+            <RightContent
+              selected={selected}
+              visible={openPost.length !== 0 ? true : false}
+            >
+              {data && (
                 <>
                   <p>{data.path}</p>
                   <div>
@@ -141,18 +155,44 @@ function Main() {
                         <span key={index}>{one}</span>
                       ))}
                     </div>
-                    <div>
+                    <div className="markdown">
                       <ReactMarkdown
                         children={data.data?.content}
                         remarkPlugins={{ remarkGfm }}
+                        components={{
+                          code({
+                            node,
+                            inline,
+                            className,
+                            children,
+                            ...props
+                          }) {
+                            const match = /language-(\w+)/.exec(
+                              className || ""
+                            );
+                            return !inline && match ? (
+                              <SyntaxHighlighter
+                                children={String(children).replace(/\n$/, "")}
+                                style={dark}
+                                language={match[1]}
+                                PreTag="div"
+                                {...props}
+                              />
+                            ) : (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            );
+                          },
+                        }}
                       />
                     </div>
                   </div>
                 </>
-              )
-            );
-          })()}
-        </RightContent>
+              )}
+            </RightContent>
+          </>
+        )}
       </RightWrap>
     </Wrap>
   );
@@ -290,6 +330,7 @@ const RightContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: scroll;
 
   padding: 10px 20px;
   > p {
@@ -318,4 +359,16 @@ const RightContent = styled.div`
       }
     }
   }
+`;
+
+const RightTagContent = styled.div`
+  background-color: ${({ theme }) => theme.color.primary};
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  padding: 10px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
