@@ -94,12 +94,14 @@ function Main() {
         {selectedTag ? (
           <RightTagContent>
             <h2>
-              {selectedTag.tagTitle} 관련 글 몰록
+              {selectedTag.tagTitle} 관련 글 몰록{" "}
               <span>({selectedTag.path.length}개)</span>
             </h2>
             <div>
               {selectedTag.path.map((path) => {
+                console.log(path);
                 const tagData = getPostOne(postData, path);
+
                 return <div>{tagData.title}</div>;
               })}
             </div>
