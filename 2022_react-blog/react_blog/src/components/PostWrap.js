@@ -4,19 +4,27 @@ import { useContext } from "react";
 import AppContext from "../context/AppContext";
 
 function PostWrap({ path, title, isClose }) {
-  const { selectedPost, setSelectedPost, openPost, setOpenPost } =
-    useContext(AppContext);
+  const {
+    selectedPost,
+    setSelectedPost,
+    openPost,
+    setOpenPost,
+    setSelectedTag,
+  } = useContext(AppContext);
 
   function selectedFunction() {
     setSelectedPost(path);
+    setSelectedTag(null);
     if (!openPost.includes(path)) {
       setOpenPost([...openPost, path]);
     }
   }
+  console.log(title, isClose);
   return (
     <PostWrapStyled
       onClick={selectedFunction}
       className={selectedPost === path ? "selected" : ""}
+      isClose={isClose}
     >
       <span
         className={isClose && selectedPost === path ? "visible" : ""}
@@ -51,7 +59,7 @@ const PostWrapStyled = styled.div`
     background-color: ${({ theme }) => theme.color.selected};
   }
   &:hover > span {
-    display: block;
+    display: ${({ isClose }) => (isClose ? "block" : "none")};
   }
   > span {
     position: absolute;
